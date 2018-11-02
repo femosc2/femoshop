@@ -1,14 +1,27 @@
-from tkinter import ttk, Frame, StringVar, Label, Tk, LEFT, RIGHT, X, Y, TOP, filedialog
+from tkinter import ttk, Frame, StringVar, Label, Tk, LEFT, RIGHT, X, Y, TOP, filedialog, messagebox
+from PIL import Image, ImageFilter
 
 root = Tk()
 
 def blur(event):
-    action_text.set("clicked!")
+    img = Image.open(root.file)
+    blurred = img.filter(ImageFilter.GaussianBlur(radius=15))
+    blurred.save("file.png")
 
 def choose_image(event):
     root.file =  filedialog.askopenfilename(initialdir = "/",title = "Select file",
     filetypes = (("jpeg files","*.jpg"),("png files","*.png")))
     choosen_text.set(root.file)
+    return root.file
+
+def change_hue(event):
+    img = Image.open(root.file)
+    layer = Image.new('RGB', img.size, 'blue') # "hue" selection is done by choosing a color...
+    hue = Image.blend(img, layer, 0.5)
+    hue.save("file.png")
+    
+
+
 
 
 #****************** TkInter ********************
@@ -39,6 +52,9 @@ chooseImageButton = ttk.Button(frame, text="Choose Image!")
 chooseImageButton.pack(side=TOP, fill=Y)
 
 button1.bind("<Button-1>", blur)
+chooseImageButton.bind("<Button-1>", choose_image)
+
+button4.bind("<Button-1>", change_hue)
 chooseImageButton.bind("<Button-1>", choose_image)
 
 buttons = [
